@@ -1,5 +1,4 @@
-<polymer-element name="ceci-daily-counter" collectionname="times" extends="ceci-element" attributes="unit increment value collectionname">
-
+<polymer-element name="ceci-daily-counter" collectionname="times" extends="ceci-element" attributes="unit increment collectionname">
   <ceci-definition>
     {
       "name": "Daily Counter",
@@ -79,7 +78,7 @@
       ready: function() {
         this.dayCountDown = '00:00';
         this.increment = Number(this.increment) || 1;
-        this.value = Number(this.value) || 0;
+        this.value = this.getTodaysValue() || 0;
         this.displayUnit = this.unit;
         this.updateUnit();
         var t = this;
@@ -99,10 +98,23 @@
           midnight.setMinutes(0);
           midnight.setSeconds(0);
 
-          return [
-            Math.floor((midnight.getTime() - new Date().getTime()) / 1000 / 60 / 60),
-            Math.ceil((midnight.getTime() - new Date().getTime()) / 1000 / 60 % 60)
-          ].join(":");
+          var hours = Math.floor(
+            (midnight.getTime() - new Date().getTime()) / 1000 / 60 / 60
+          );
+
+          if (hours < 10) {
+            hours = "0" + hours;
+          }
+
+          var minutes = Math.ceil(
+            (midnight.getTime() - new Date().getTime()) / 1000 / 60 % 60
+          );
+
+          if (minutes < 10) {
+            minutes = "0" + minutes;
+          }
+
+          return [hours, minutes].join(":");
         }
 
         this.dayCountDown = minutesUntilMidnight();
@@ -129,6 +141,18 @@
       },
       unitChanged: function() {
         this.updateUnit();
+      },
+      getTodaysValue: function(){
+        var collection = localStorage['hack-collection-' + this.collectionname];
+
+        // This will go away when collections are redone
+        if (!collection){
+          localStorage['hack-collection-' + this.collectionname] = JSON.stringify({});
+        }
+
+        var data = JSON.parse(localStorage['hack-collection-' + this.collectionname]);
+
+        return data[new Date().toLocaleDateString()];
       },
       storeValue: function(val) {
         var collection = localStorage['hack-collection-' + this.collectionname];
