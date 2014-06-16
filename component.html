@@ -46,30 +46,15 @@
     }
   </ceci-definition>
   <template>
-    <div class="wrapper">
-      <div class="timer">
-        <span>T-{{dayCountDown}}</span>
-        <span class="label">Until Tomorrow</span>
-      </div>
-    </div>
     <link rel="stylesheet" href="component.css">
-    <div class="wrapper">
-
-      <div class="counter-control up" on-click="{{countUp}}">
-        <span class="icon">+</span>
+      <div class="timer">
+        <span>{{dayCountDown}}</span>
+        <span class="label">left Today</span>
       </div>
-
       <div class="counter">
         <span>{{value}}</span>
         <span class="label">{{displayUnit}}</span>
       </div>
-
-      <div class="counter-control down" on-click="{{countDown}}">
-        <span class="icon">-</span>
-      </div>
-
-    </div>
-
     <shadow></shadow>
   </template>
   <tags></tags>
@@ -85,7 +70,7 @@
         this.countdownInterval = setInterval(function(){
           t.updateCountdown();
         }, 2000);
-
+        t.updateCountdown();
         this.super();
       },
       value: 0,
